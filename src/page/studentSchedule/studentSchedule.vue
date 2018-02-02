@@ -42,10 +42,7 @@
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -308,9 +305,11 @@
         });
       },
       //显示编辑界面
-      handleEdit: function (index, row) {
+      handleEdit (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
+        console.log(index);
+        console.log(row);
       },
       //显示新增界面
       handleAdd: function () {
