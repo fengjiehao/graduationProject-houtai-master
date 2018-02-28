@@ -24,41 +24,41 @@ export default [
     children: [
       // 教师帐号后台系统
       {
-        path:'/teacherSchedule',component:teacherSchedule,
+        name:'teacherSchedule',path:'/teacherSchedule',component:teacherSchedule,
       },{
-        path:'/teacherAttendanceManagement',component:teacherAttendanceManagement,
+        name:'teacherAttendanceManagement',path:'/teacherAttendanceManagement',component:teacherAttendanceManagement,
       },{
-        path:'/teacherAttendanceDetail',component:teacherAttendanceDetail,
+        name:'teacherAttendanceDetail',path:'/teacherAttendanceDetail',component:teacherAttendanceDetail,
       },{
-        path:'/teacherAttendanceStatistics',component:teacherAttendanceStatistics,
+        name:'teacherAttendanceStatistics',path:'/teacherAttendanceStatistics',component:teacherAttendanceStatistics,
       },{
-        path:'/teacherDoingAttendance',component:teacherDoingAttendance,
+        name:'teacherDoingAttendance',path:'/teacherDoingAttendance',component:teacherDoingAttendance,
       },
       // 学生帐号后台系统
       {
-        path:'/studentAttendanceDetail',component:studentAttendanceDetail,
+        name:'studentAttendanceDetail',path:'/studentAttendanceDetail',component:studentAttendanceDetail,
       },{
-        path:'/studentSchedule',component:studentSchedule,
+        name:'studentSchedule',path:'/studentSchedule',component:studentSchedule,
       },
       // 管理员帐号后台系统
       {
-        path:'/adminTeacherUser',component:adminTeacherUser,
+        name:'adminTeacherUser',path:'/adminTeacherUser',component:adminTeacherUser,
       },{
-        path:'/adminStudentUser',component:adminStudentUser,
+        name:'adminStudentUser',path:'/adminStudentUser',component:adminStudentUser,
       },{
-        path:'/adminChangePwd',component:adminChangePwd,
+        name:'adminChangePwd',path:'/adminChangePwd',component:adminChangePwd,
       },{
-        path:'/adminClassTimeManagement',component:adminClassTimeManagement,
+        name:'adminClassTimeManagement',path:'/adminClassTimeManagement',component:adminClassTimeManagement,
       },{
-        path:'/adminCollegeManagement',component:adminCollegeManagement,
+        name:'adminCollegeManagement',path:'/adminCollegeManagement',component:adminCollegeManagement,
       },{
-        path:'/adminMajorManagement',component:adminMajorManagement,
+        name:'adminMajorManagement',path:'/adminMajorManagement',component:adminMajorManagement,
       },{
-        path:'/adminClassManagement',component:adminClassManagement,
+        name:'adminClassManagement',path:'/adminClassManagement',component:adminClassManagement,
       },
     ]
   },
   {path:'/',component:login,},
-  {path:'/login',component:login,},
+  {name:'login',path:'/login',component:login,},
 
 ]

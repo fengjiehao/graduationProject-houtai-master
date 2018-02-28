@@ -25,6 +25,7 @@
 
 <script>
   import Vue from 'vue'
+  import axios from 'axios'
 
   export default {
     name:'login',
@@ -44,6 +45,12 @@
           ],
         },
         isSuccess: false,
+        loginVO:{
+          name:'',
+          user:'',
+          password:'',
+          ruleType:'',
+        },
       }
     },
     methods: {
@@ -58,10 +65,56 @@
       // 登录
       login(){
           this.checkPassword();
+          let self = this;
+          //密码合理
           if(this.isSuccess) {
-            this.$router.push('/teacherSchedule');
+            axios.get('http://localhost:8088/attendanceSystem/Users/checkLogin',{
+              params:{
+                user1: this.userVO.user,
+                password1: this.userVO.password,
+              }
+            }).then(response => {
+                console.log(response.data);
+              self.loginVO = response.data;
+                if(self.loginVO === ""){
+                  this.$message({
+                    message: '用户不存在',
+                    type: 'error'
+                  });
+                } else {
+                  if(self.loginVO.password === "-1"){
+                    this.$message({
+                      message: '密码错误',
+                      type: 'error'
+                    });
+                  }else{
+                    console.log("登录成功");
+                    //把登录用户信息缓存
+                    var login1 = this.loginVO;
+                    login1 = JSON.stringify(login1);
+                    localStorage.setItem("loginUserVO", login1);
+
+                    this.$router.push({
+                      name:  'teacherSchedule',
+                      query: {
+                        loginName:this.loginVO.name,
+                        loginRuleType:this.loginVO.ruletype
+//                        loginUser: this.loginVO,
+                      }
+                    });
+                  }
+                }
+              }), () => {
+              console.log(error);
+            };
+          } else {
+            this.$message({
+              message: '帐号密码格式错误',
+              type: 'warning'
+            });
           }
       },
+
       // 密码不正确
       passwordError() {
         this.$message.error('密码不正确');

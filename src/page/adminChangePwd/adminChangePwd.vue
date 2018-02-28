@@ -36,6 +36,7 @@
 
   <script>
     import store from 'src/store.js'
+    import axios from 'axios'
 
     export default {
     name:'adminChangePwd',
@@ -70,8 +71,14 @@
             { validator: validatePass, trigger: 'blur' }
             ],
         },
+        loginUser:{},
+        newPwdVO:{},
       }
     },
+      created() {
+        this.loginUser = this.$route.query.loginUser;
+        console.log(this.loginUser);
+      },
     methods: {
       // 判断密码合理性
       checkPassword() {
@@ -93,7 +100,36 @@
         } else {
           this.checkPassword();
           if(this.isSuccess) {
-            console.log('修改成功');
+            axios.get('http://localhost:8088/attendanceSystem/Users/updatePassword',{
+              params:{
+                user: this.loginUser.user,
+                oldPassword: this.passwordVO.oldPwd,
+                newPassword: this.passwordVO.newPwd,
+              }
+            }).then(response => {
+              console.log(response.data);
+//              self.loginVO = response.data;
+              this.newPwdVO = response.data;
+              if(this.newPwdVO === ""){
+                this.$message({
+                  message: '旧密码错误',
+                  type: 'error'
+                });
+                console.log('旧密码错误');
+              } else {
+                this.$message({
+                  message: '密码修改成功，请重新登录',
+                  type: 'success'
+                });
+                this.$router.push({
+                  name:  'login',
+                });
+                console.log('修改密码成功');
+              }
+            }), () => {
+              console.log(error);
+            };
+
           }
         }
       },

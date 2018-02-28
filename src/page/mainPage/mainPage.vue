@@ -11,7 +11,7 @@
         <span><img src="../../assets/myself.jpg" class="myself"/></span>
           <el-dropdown >
             <span class="el-dropdown-link myselfUser">
-              黎小明<i class="el-icon-arrow-down el-icon--right"></i>
+              {{this.loginName}}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item><p class="myselfQuit" @click="logout">注销</p></el-dropdown-item>
@@ -19,7 +19,9 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <span class="userType">教师用户</span>
+        <span class="userType" v-if="this.loginRuleType == 0">管理员</span>
+        <span class="userType" v-if="this.loginRuleType == 1">教师用户</span>
+        <span class="userType" v-if="this.loginRuleType == 2">学生用户</span>
       </div>
     </el-row>
   </header>
@@ -29,28 +31,29 @@
     <!-- 左侧导航 -->
     <div class="main-left">
       <el-menu default-active="/activePublic" class="el-menu-vertical-demo" :router="true">
-        <el-submenu index="1">
+        <el-submenu index="1" v-if="this.loginRuleType == 0">
           <template slot="title">
-            <i class="el-icon-location"></i>
+            <i class="el-icon-menu"></i>
             <span>信息管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/adminClassTimeManagement" :class="{'isActive': isSelectNum[10]}" @click="isSelected(10)">课程时间管理</el-menu-item>
-            <el-menu-item index="/adminCollegeManagement" :class="{'isActive': isSelectNum[11]}" @click="isSelected(11)">学院管理</el-menu-item>
-            <el-menu-item index="/adminMajorManagement" :class="{'isActive': isSelectNum[12]}" @click="isSelected(12)">专业管理</el-menu-item>
-            <el-menu-item index="/adminClassManagement" :class="{'isActive': isSelectNum[13]}" @click="isSelected(13)">班级管理</el-menu-item>
+            <el-menu-item index="/adminClassTimeManagement" :class="{'isActive': isSelectNum[10]}" @click="isSelected(10)" ><i class="el-icon-setting"></i>课程时间管理</el-menu-item>
+            <el-menu-item index="/adminCollegeManagement" :class="{'isActive': isSelectNum[11]}" @click="isSelected(11)" ><i class="el-icon-setting"></i>学院管理</el-menu-item>
+            <el-menu-item index="/adminMajorManagement" :class="{'isActive': isSelectNum[12]}" @click="isSelected(12)" ><i class="el-icon-setting"></i>专业管理</el-menu-item>
+            <el-menu-item index="/adminClassManagement" :class="{'isActive': isSelectNum[13]}" @click="isSelected(13)" ><i class="el-icon-setting"></i>班级管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="/teacherSchedule" :class="{'isActive': isSelectNum[0]}" @click="isSelected(0)">课程信息管理</el-menu-item>
-        <el-menu-item index="/teacherAttendanceManagement" :class="{'isActive': isSelectNum[1]}" @click="isSelected(1)">考勤管理</el-menu-item>
-        <el-menu-item index="/teacherAttendanceDetail" :class="{'isActive': isSelectNum[2]}" @click="isSelected(2)">出勤详情</el-menu-item>
-        <el-menu-item index="/teacherAttendanceStatistics" :class="{'isActive': isSelectNum[3]}" @click="isSelected(3)">考勤统计</el-menu-item>
-        <el-menu-item index="/teacherDoingAttendance" :class="{'isActive': isSelectNum[4]}" @click="isSelected(4)">实时考勤</el-menu-item>
-        <el-menu-item index="/studentAttendanceDetail" :class="{'isActive': isSelectNum[5]}" @click="isSelected(5)">考勤详情</el-menu-item>
-        <el-menu-item index="/studentSchedule" :class="{'isActive': isSelectNum[6]}" @click="isSelected(6)">课程管理</el-menu-item>
-        <el-menu-item index="/adminTeacherUser" :class="{'isActive': isSelectNum[7]}" @click="isSelected(7)">教师用户管理</el-menu-item>
-        <el-menu-item index="/adminStudentUser" :class="{'isActive': isSelectNum[8]}" @click="isSelected(8)">学生用户管理</el-menu-item>
-        <el-menu-item index="/adminChangePwd" :class="{'isActive': isSelectNum[9]}" @click="isSelected(9)">修改密码</el-menu-item>
+        <el-menu-item index="/teacherSchedule" :class="{'isActive': isSelectNum[0]}" @click="isSelected(0)" v-if="this.loginRuleType == 1"> <i class="el-icon-setting"></i>课程信息管理</el-menu-item>
+        <el-menu-item index="/teacherAttendanceManagement" :class="{'isActive': isSelectNum[1]}" @click="isSelected(1)" v-if="this.loginRuleType == 1"> <i class="el-icon-setting"></i>考勤管理</el-menu-item>
+        <el-menu-item index="/teacherAttendanceDetail" :class="{'isActive': isSelectNum[2]}" @click="isSelected(2)" v-if="this.loginRuleType == 1"><i class="el-icon-date"></i>出勤详情</el-menu-item>
+        <el-menu-item index="/teacherAttendanceStatistics" :class="{'isActive': isSelectNum[3]}" @click="isSelected(3)" v-if="this.loginRuleType == 1"><i class="el-icon-tickets"></i>考勤统计</el-menu-item>
+        <el-menu-item index="/teacherDoingAttendance" :class="{'isActive': isSelectNum[4]}" @click="isSelected(4)" v-if="this.loginRuleType == 1"><i class="el-icon-time"></i>实时考勤</el-menu-item>
+        <el-menu-item index="/studentAttendanceDetail" :class="{'isActive': isSelectNum[5]}" @click="isSelected(5)" v-if="this.loginRuleType == 2"> <i class="el-icon-date"></i>考勤详情</el-menu-item>
+        <el-menu-item index="/studentSchedule" :class="{'isActive': isSelectNum[6]}" @click="isSelected(6)" v-if="this.loginRuleType == 2"> <i class="el-icon-setting"></i>课程管理</el-menu-item>
+        <el-menu-item index="/adminTeacherUser" :class="{'isActive': isSelectNum[7]}" @click="isSelected(7)" v-if="this.loginRuleType == 0"> <i class="el-icon-setting"></i>教师用户管理</el-menu-item>
+        <el-menu-item index="/adminStudentUser" :class="{'isActive': isSelectNum[8]}" @click="isSelected(8)" v-if="this.loginRuleType == 0"> <i class="el-icon-setting"></i>学生用户管理</el-menu-item>
+        <el-menu-item index="/adminChangePwd" :class="{'isActive': isSelectNum[9]}" @click="isSelected(9)"><i class="el-icon-view"></i>修改密码</el-menu-item>
+
 
       </el-menu>
     </div>
@@ -74,6 +77,10 @@
         active:true,
         headerFixed : true,
         isSelectNum: [],
+        loginUser:{},
+        rule:'',
+        loginName:'',
+        loginRuleType:'',
       }
     },
     methods: {
@@ -83,7 +90,12 @@
       },
       // 修改密码
       changePwd () {
-        this.$router.push('/adminChangePwd');
+        this.$router.push({
+            name:'adminChangePwd',
+            query: {
+              loginUser:this.loginUser
+            }
+          });
         this.isSelected(9);
       },
       // 左侧导航被选择样式
@@ -139,14 +151,23 @@
             this.isSelectNum[14] = true;
             break;
         }
-
+      },
+      //从本地缓存获取角色和姓名
+      confirmRule() {
+        var obj = JSON.parse(localStorage.getItem("loginUserVO"));
+        console.log(obj);
+        this.loginRuleType = obj.ruletype;
+        this.loginName = obj.name;
+        this.isSelectNum[4] = true;
       },
       },
     mounted() {
-      console.log(this.isSelectNum);
+//      console.log(this.isSelectNum);
+//      console.log(this.loginRuleType);
+//      console.log(this.loginName);
     },
     created(){
-      this.isSelectNum[4] = true;
+      this.confirmRule();
     },
 
   }
@@ -226,6 +247,7 @@
     width: 200px;
     font-family: 微软雅黑;
     height: 100%;
+    overflow-y: auto;
   }
   main .main-right{
     -webkit-box-flex:1;
@@ -304,6 +326,10 @@
     min-width: inherit;
     margin: 6px 40px;
     border-radius:10px;
-
+  }
+</style>
+<style>
+  .main-left .el-menu-item-group__title{
+    padding: 0px !important;
   }
 </style>
