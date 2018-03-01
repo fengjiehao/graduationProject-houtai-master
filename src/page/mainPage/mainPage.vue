@@ -255,6 +255,7 @@
     background-color: #fff;
     padding: 50px 50px;
     margin-left: 200px;
+    overflow-x: hidden;
   }
   /* 单选框 */
   .el-form-item .el-radio+.el-radio {
