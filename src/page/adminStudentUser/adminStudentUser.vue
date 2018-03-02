@@ -381,24 +381,38 @@
       },
       //批量删除
       batchRemove () {
-        var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        let self = this;
+//        var ids = this.sels.map(item => item.id).toString();
+        this.$confirm('是否确定删除该学生信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let para = { ids: ids };
-          batchRemoveUser(para).then((res) => {
-            this.listLoading = false;
-            //NProgress.done();
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getUsers();
-          });
-        }).catch(() => {
+          //确定
+          axios.post('http://localhost:8088/attendanceSystem/studentUser/DelClassInfoBatch', {
+            params:{
+              classInfoList:self.sels,
+            }
+          })
+            .then(response => {
+              console.log(response.data);
+              if(response.data != null){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.getAllInfoList();
+              }
+            }), () => {
+            console.log(error);
+          };
 
+        }).catch(() => {
+          //取消
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
         });
       }
     },

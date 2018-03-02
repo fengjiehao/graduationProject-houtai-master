@@ -4,10 +4,16 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
         <el-form-item>
+          <el-input v-model="selectId" placeholder="请输入课程名"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" v-on:click="selectAction(selectId)">查询</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-button type="warning" @click="handleAdd">新增</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="handleAdd">删除</el-button>
+          <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -18,9 +24,9 @@
       </el-table-column>
       <el-table-column type="index" width="150">
       </el-table-column>
-      <el-table-column prop="classno" label="班级号" min-width="150" sortable>
+      <el-table-column prop="classno" label="课程号" min-width="150" sortable>
       </el-table-column>
-      <el-table-column prop="classname" label="班级名称" min-width="200" sortable>
+      <el-table-column prop="classname" label="课程名称" min-width="200" sortable>
       </el-table-column>
       <el-table-column label="操作" min-width="150">
         <template scope="scope">
@@ -29,6 +35,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <div class="paging">
           <span>第{{this.currentPage}}/{{this.countPage}}页</span>&nbsp;&nbsp;
           <!--<span>总记录数&nbsp;&nbsp;</span>&nbsp;&nbsp;-->
@@ -46,6 +53,7 @@
         <el-button type="primary" size="small" round @click="selectPage">go</el-button>
       </span>
     </div>
+
     <!--编辑界面-->
     <el-dialog title="编辑班级信息" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editClassVO" label-width="80px" :rules="editFormRules" ref="editForm">
@@ -133,20 +141,37 @@
         currentPage: 1,
         //分页总数
         countPage: 1,
+        //自由查询页的值
         seekPage: 1,
+        //查询值
+        selectId:'',
+        //保存自由查询页的值
+        currentSelectPage: 1,
+        //批量删除的List
+        delList:[],
       }
     },
     methods: {
-      // 通过学号查询
+      //查询事件
+      selectAction(id){
+        this.currentPage = 1;
+        this.selectByclassNo(id);
+      },
+      // 通过学号查询（分页）
       selectByclassNo(id){
+        this.currentSelectPage = id;
         console.log(id);
         let self = this;
-        axios.get('http://localhost:8088/attendanceSystem/classInfo/getClassById?id='+ id)
+        axios.get('http://localhost:8088/attendanceSystem/classInfo/getClassByIdPaging',{
+          params:{
+            id: id,
+            currentPage: this.currentPage,
+          }
+        })
           .then(response => {
             console.log(response.data);
             this.classList = response.data;
-
-            var data = response.data;
+            this.getSelectCount();
           }), () => {
           console.log(error);
         };
@@ -156,6 +181,22 @@
       getTotalCount() {
         let self = this;
         axios.get('http://localhost:8088/attendanceSystem/classInfo/getTotalCount')
+          .then(response => {
+            console.log(response.data);
+            this.countPage = response.data;
+            console.log(this.countPage);
+          }), () => {
+          console.log(error);
+        };
+      },
+      // 获取查询结果的数据总页数
+      getSelectCount() {
+        let self = this;
+        axios.get('http://localhost:8088/attendanceSystem/classInfo/getSelectCount',{
+          params:{
+            id: this.currentSelectPage,
+          }
+        })
           .then(response => {
             console.log(response.data);
             this.countPage = response.data;
@@ -175,8 +216,6 @@
           .then(response => {
             console.log(response.data);
             this.classList = response.data;
-
-            var data = response.data;
           }), () => {
           console.log(error);
         };
@@ -313,13 +352,22 @@
       //首页
       FirstPage() {
         this.currentPage = 1;
-        this.getAllInfoList();
+        if(this.selectId === "") {
+          this.getAllInfoList();
+        } else {
+          this.selectByclassNo(this.currentSelectPage);
+        }
       },
       //上一页
       PreviousPage() {
         if(this.currentPage > 1){
           this.currentPage -= 1;
-          this.getAllInfoList();
+          //判断是否在查询
+          if(this.selectId === "") {
+            this.getAllInfoList();
+          } else {
+            this.selectByclassNo(this.currentSelectPage);
+          }
         } else if(this.currentPage = 1){
           this.$message({message: '当前页为第一页', type: 'warning'});
         }
@@ -328,7 +376,11 @@
       NextPage() {
         if(this.currentPage < this.countPage){
           this.currentPage += 1;
-          this.getAllInfoList();
+          if(this.selectId === "") {
+            this.getAllInfoList();
+          } else {
+            this.selectByclassNo(this.currentSelectPage);
+          }
         } else if(this.currentPage = this.countPage){
           this.$message({message: '当前页为最后一页', type: 'warning'});
         }
@@ -336,47 +388,68 @@
       //尾页
       FinalPage() {
         this.currentPage = this.countPage;
-        this.getAllInfoList();
+        if(this.selectId === "") {
+          this.getAllInfoList();
+        } else {
+          this.selectByclassNo(this.currentSelectPage);
+        }
       },
       //查询输入页数的数据
       selectPage() {
+        if(this.seekPage === ""){
+          this.seekPage = 1;
+        }
         //取整
         this.seekPage = parseInt(this.seekPage);
         if(this.seekPage > this.countPage){
           this.seekPage = this.countPage;
           this.currentPage = this.countPage;
-          this.$message({message: '当前页面为最后一页', type: 'warning'}); 
+          this.$message({message: '当前页面为最后一页', type: 'warning'});
         }else if(this.seekPage < 1){
           this.seekPage = 1;
           this.currentPage = 1;
         }else{
           this.currentPage = this.seekPage;
         }
-        this.getAllInfoList();
+        if(this.selectId === "") {
+          this.getAllInfoList();
+        } else {
+          this.selectByclassNo(this.currentSelectPage);
+        }
       },
       selsChange: function (sels) {
         this.sels = sels;
       },
       //批量删除
-      batchRemove: function () {
-        var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('确认删除选中记录吗？', '提示', {
+      batchRemove () {
+        let self = this;
+//        var ids = this.sels.map(item => item.id).toString();
+        this.$confirm('是否确定批量删除所选学生信息?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let para = { ids: ids };
-          batchRemoveUser(para).then((res) => {
-            this.listLoading = false;
-            //NProgress.done();
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getUsers();
-          });
-        }).catch(() => {
+          //确定
+          axios.post('http://localhost:8088/attendanceSystem/classInfo/DelClassInfoBatch', self.sels)
+            .then(response => {
+              console.log(response.data);
+              if(response.data != null){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.getAllInfoList();
+              }
+            }), () => {
+            console.log(error);
+          };
 
+        }).catch(() => {
+          //取消
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
         });
       }
     },

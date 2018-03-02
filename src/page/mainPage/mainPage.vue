@@ -40,7 +40,7 @@
             <el-menu-item index="/adminClassTimeManagement" :class="{'isActive': isSelectNum[10]}" @click="isSelected(10)" ><i class="el-icon-setting"></i>课程时间管理</el-menu-item>
             <el-menu-item index="/adminCollegeManagement" :class="{'isActive': isSelectNum[11]}" @click="isSelected(11)" ><i class="el-icon-setting"></i>学院管理</el-menu-item>
             <el-menu-item index="/adminMajorManagement" :class="{'isActive': isSelectNum[12]}" @click="isSelected(12)" ><i class="el-icon-setting"></i>专业管理</el-menu-item>
-            <el-menu-item index="/adminClassManagement" :class="{'isActive': isSelectNum[13]}" @click="isSelected(13)" ><i class="el-icon-setting"></i>班级管理</el-menu-item>
+            <el-menu-item index="/adminClassManagement" :class="{'isActive': isSelectNum[13]}" @click="isSelected(13)" ><i class="el-icon-setting"></i>课程管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-menu-item index="/teacherSchedule" :class="{'isActive': isSelectNum[0]}" @click="isSelected(0)" v-if="this.loginRuleType == 1"> <i class="el-icon-setting"></i>课程信息管理</el-menu-item>
