@@ -235,7 +235,7 @@
     display: -ms-flexbox;
     display: flex;
     border: solid 40px #E9ECF1;
-    min-height: 685px;
+    min-height: auto;
     background-color: whitesmoke;
   }
   main .main-left{
@@ -248,6 +248,7 @@
     font-family: 微软雅黑;
     height: 100%;
     overflow-y: auto;
+    background-color: whitesmoke;
   }
   main .main-right{
     -webkit-box-flex:1;

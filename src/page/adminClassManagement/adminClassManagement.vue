@@ -1,5 +1,6 @@
 <template>
   <section>
+    <div class="mainDiv">
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
@@ -53,7 +54,9 @@
         <el-button type="primary" size="small" round @click="selectPage">go</el-button>
       </span>
     </div>
+      <div style="height: 100px"> </div>
 
+    </div>
     <!--编辑界面-->
     <el-dialog title="编辑班级信息" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editClassVO" label-width="80px" :rules="editFormRules" ref="editForm">
@@ -461,7 +464,7 @@
       this.getTotalCount();
     },
     mounted() {
-//      this.getUsers();
+// //     this.getUsers();
     }
   }
 
@@ -471,10 +474,14 @@
 .el-input{
   width: 80%;
 }
+  .mainDiv{
+    position: relative;
+  }
   .paging{
-    position: fixed;
-    bottom: 3%;
-    right: 30%;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
     font-family: 微软雅黑;
   }
 </style>
